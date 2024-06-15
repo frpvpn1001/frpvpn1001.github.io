@@ -1,14 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta name="msvalidate.01" content="3B28AA188E7152E6389E8450C163BAC9" />
+     <meta name='description' content='王泽仁男神的ai'>
+    <meta name="baidu-site-verification" content="codeva-G1zZtEl5H9" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FRP</title>
+   <title>聊天机器人</title>
+   <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .chat-container {
+            width: 400px;
+            max-width: 100%;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .chat-header h2 {
+            margin: 0;
+        }
+        .message-form {
+            display: flex;
+            margin-top: auto;
+        }
+        .message-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            outline: none;
+        }
+        .send-button {
+            margin-left: 10px;
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .send-button:hover {
+            background-color: #0056b3;
+        }
+        .chat-messages {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+        .chat-messages li {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #e5e5e5;
+            border-radius: 3px;
+        }
+    </style>
+   <script src="/1.js"></script>
 </head>
-<body background="./images.jpg"></body>
 <body>
-    <h1>Welcome to OrCloud FRP</h1>
-    <h2><a href="./cart">creative a FRP Server(NO free)</a></h2>
-    <button type="button">点击我！</button>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>无法陪你看天边的晚霞但是可以陪你看讲台上的云霞与其他用户聊天:<button onclick="window.location.href='https://h.she.ci'">在线聊天</button></h2>
+            <!-- 可以添加关闭按钮或其他功能 -->
+        </div>
+        <ul class="chat-messages" id="chat-history"></ul>
+        <form class="message-form" id="chat-form">
+           <input type="text" id="user_input" class="message-input" name="user_input" placeholder="聊天机器人请输入您的消息..." required>
+           <button type="submit" class="send-button">发送</button>
+        </form>
+    </div>
+
+   <script>
+        let isThinking = false;
+        $("#chat-form").on("submit", function(event) {
+            event.preventDefault();
+            if (isThinking) return;
+            const user_input = $("#user_input").val();
+            if (user_input.toLowerCase() === "exit") {
+                $("#chat-history").append(`<li class="user-message">${user_input}</li><li class="bot-message">会话结束。</li>`);
+                $("#user_input").val("");
+                return;
+            }
+
+            isThinking = true;
+            $("#chat-history").append(`<li class="user-message">${user_input}</li><li class="bot-message thinking">思考中...</li>`);
+            $("#user_input").val("");
+
+            $.post("/chat", { user_input: user_input }, function(data) {
+                $("#chat-history li.bot-message.thinking").removeClass('thinking').text(data.response);
+                isThinking = false;
+            }).fail(function() {
+                $("#chat-history li.bot-message.thinking").text("请求失败，请稍后重试。");
+                isThinking = false;
+            });
+        });
+    </script>
 </body>
 </html>
